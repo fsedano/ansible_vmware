@@ -1,0 +1,10 @@
+---
+- hosts: vmtest
+  become: true
+  tasks:
+    - name: Sync Nginx
+      apt: pkg=nginx state={{state}} update_cache=true
+
+  handlers:
+    - name: Start nginx
+      service: name=nginx state={{state}}

@@ -1,0 +1,42 @@
+---
+- name: Create a VM
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - /app/vars.yaml
+  tasks:
+  - name: Create a virtual machine on given ESXi hostname
+    vmware_guest:
+      hostname: "{{ vcenter_ip }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      validate_certs: no
+      folder: "{{ folder }}"
+      name: test_vm_0016
+      #state: poweredon
+      state: absent
+      force: yes
+      guest_id: centos64Guest
+      datacenter: "{{ datacenter_name }}"
+      cluster: "{{ cluster_name }}"  
+      cdrom:
+        type: iso
+        iso_path: "[datastore1] ISOs/ubuntu-16.04.2-server-amd64.iso"
+      disk:
+      - size_gb: 20
+        type: thin
+        datastore: datastore1
+      hardware:
+        memory_mb: 2048
+        num_cpus: 2
+        scsi: paravirtual
+      networks:
+      - name: vl30
+        device_type: vmxnet3
+        ip: 192.168.30.188
+        netmask: 255.255.255.0
+        gateway: 192.168.30.254
+        start_connected: True
+        type: static
+
+      wait_for_ip_address: no

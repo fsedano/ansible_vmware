@@ -1,0 +1,23 @@
+---
+- name: Deploy an OVA
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - /app/vars.yaml
+  tasks:
+  - name: Deploy OVA
+    vmware_deploy_ovf:
+      validate_certs: False
+      hostname: '{{ vcenter_ip }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      ovf: '/app/ubuntu-16.04-server-cloudimg-amd64.ova'
+      #wait_for_ip_address: true
+      datacenter: "{{ datacenter_name }}"
+      folder: Datacenter1/ansible-deployed
+      cluster: "{{ cluster_name }}"
+      name: "test12345"
+      datastore: "datastore1"
+      disk_provisioning: "thin"
+      power_on: "yes"
+

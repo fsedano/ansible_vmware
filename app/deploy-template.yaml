@@ -1,0 +1,35 @@
+---
+- name: Create a VM from a template
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - /app/vars.yaml
+  tasks:
+  - name: Print vars
+    debug:
+      msg: "deploy to {{ vcenter_ip }} with {{ vcenter_username }} / {{ vcenter_password }}"
+
+  - name: Clone the template
+    vmware_guest:
+      #state: poweredon
+      state: absent
+      force: yes
+      networks:
+        - name: vl30
+          ip: 192.168.30.188
+          netmask: 255.255.255.0
+          gateway: 192.168.30.254
+          start_connected: True
+          type: static
+      customization:
+        hostname: perico123
+      hostname: "{{ vcenter_ip }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      validate_certs: False
+      name: testvm
+      template: Ubuntu18 Old ISO
+      datacenter: "{{ datacenter_name }}"
+      folder: "{{ folder }}"
+      cluster: "{{ cluster_name }}"
+      wait_for_ip_address: True

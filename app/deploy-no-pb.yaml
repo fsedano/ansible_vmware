@@ -1,0 +1,40 @@
+- name: 'Deploy the VCSA OVA to an ESXi server'
+  connection: 'local'
+  gather_facts: False
+  vars_files:
+    - /app/vars.yaml
+  hosts: localhost
+  serial: 1
+  tasks:
+    - name: 'Deploy OVF'
+      vmware_deploy_ovf:
+        hostname: '{{ vcenter_ip }}'
+        username: '{{ vcenter_username }}'
+        password: ' {{ vcenter_password }}'
+        validate_certs: False
+        name: "test123"
+        datastore: "datastore1"
+        disk_provisioning: "thin"
+        networks:
+          "Network 1": "vmware"
+        ovf: "/app/ubuntu-16.04-server-cloudimg-amd64.ova"
+        power_on: "yes"
+        deployment_option: "medium-lstorage"
+        fail_on_spec_warnings: "yes"
+        wait_for_ip_address: "no"
+        properties:
+          guestinfo.cis.appliance.net.addr.family: "ipv4"
+          guestinfo.cis.appliance.net.mode: "static"
+          guestinfo.cis.appliance.net.addr: "192.168.1.10"
+          guestinfo.cis.appliance.net.prefix: "25"
+          guestinfo.cis.appliance.net.gateway: "10.40.188.1"
+          guestinfo.cis.appliance.net.dns.servers: "1.1.1.1"
+          guestinfo.cis.appliance.net.pnid: "192.168.1.10"
+          guestinfo.cis.vmdir.password: "a_password_02"
+          guestinfo.cis.appliance.root.passwd: "a_password_03"
+          guestinfo.cis.appliance.ssh.enabled: "true"
+          guestinfo.cis.appliance.ntp.servers: "ntp1, ntp2"
+          vami.domain.VMware-vCenter-Server-Appliance: "vsphere.local"
+          vami.searchpath.VMware-vCenter-Server-Appliance: "test.local"
+          guestinfo.cis.ceip_enabled: "false"
+      delegate_to: localhost

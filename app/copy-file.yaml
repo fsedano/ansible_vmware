@@ -1,0 +1,18 @@
+---
+- name: Copy a file
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - /app/vars.yaml
+  tasks:
+    - name: Copy the file
+      vsphere_copy:
+        validate_certs: False
+        host: '{{ vcenter_ip }}'
+        login: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        src: '/app/{{ file }}'
+        datacenter: "{{ datacenter_name }}"
+        datastore: datastore1
+        path: 'ISOsAuto/{{ file }}'
+
